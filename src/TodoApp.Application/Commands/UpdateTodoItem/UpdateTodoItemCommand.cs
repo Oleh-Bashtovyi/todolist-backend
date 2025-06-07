@@ -2,14 +2,17 @@
 using MediatR;
 using TodoApp.Application.DTOs;
 
-namespace TodoApp.Application.Commands.CreateTodoItem;
+namespace TodoApp.Application.Commands.UpdateTodoItem;
 
-public record CreateTodoItemCommand(CreateTodoDto TodoDto) : IRequest<Guid>;
+public record UpdateTodoItemCommand(UpdateTodoDto TodoDto) : IRequest<TodoDto>;
 
-public class CreateTodoItemCommandValidator : AbstractValidator<CreateTodoItemCommand>
+public class UpdateTodoItemCommandValidator : AbstractValidator<UpdateTodoItemCommand>
 {
-    public CreateTodoItemCommandValidator()
+    public UpdateTodoItemCommandValidator()
     {
+        RuleFor(x => x.TodoDto.Id)
+            .NotNull().WithMessage("Id is required.");
+
         RuleFor(x => x.TodoDto.Title)
             .NotEmpty().WithMessage("Title is required.")
             .MaximumLength(200).WithMessage("Title must not exceed 200 characters.");
@@ -20,8 +23,5 @@ public class CreateTodoItemCommandValidator : AbstractValidator<CreateTodoItemCo
 /*        RuleFor(x => x.TodoDto.DueDate)
             .GreaterThan(DateTime.UtcNow).WithMessage("Due date must be in the future.")
             .When(x => x.TodoDto.DueDate.HasValue);*/
-
-        RuleFor(x => x.TodoDto.Status)
-            .IsInEnum().WithMessage("Status must be a valid TodoStatus value.");
     }
 }
