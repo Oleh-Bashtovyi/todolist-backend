@@ -3,7 +3,7 @@ using MediatR;
 using TodoApp.Application.Interfaces;
 using TodoApp.Domain.Entities;
 
-namespace TodoApp.Application.Commands.CreateTodoItem;
+namespace TodoApp.Application.Features.Commands.CreateTodoItem;
 
 public class CreateTodoItemCommandHandler(ITodoRepository repository) : IRequestHandler<CreateTodoItemCommand, Guid>
 {

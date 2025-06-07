@@ -2,7 +2,7 @@
 using MediatR;
 using TodoApp.Application.DTOs;
 
-namespace TodoApp.Application.Commands.CreateTodoItem;
+namespace TodoApp.Application.Features.Commands.CreateTodoItem;
 
 public record CreateTodoItemCommand(CreateTodoDto TodoDto) : IRequest<Guid>;
 

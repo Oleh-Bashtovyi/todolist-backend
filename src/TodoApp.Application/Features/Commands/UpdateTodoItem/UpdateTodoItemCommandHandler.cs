@@ -5,7 +5,7 @@ using TodoApp.Application.Exceptions;
 using TodoApp.Application.Interfaces;
 using TodoApp.Domain.Entities;
 
-namespace TodoApp.Application.Commands.UpdateTodoItem;
+namespace TodoApp.Application.Features.Commands.UpdateTodoItem;
 
 public class UpdateTodoItemCommandHandler(ITodoRepository repository) : IRequestHandler<UpdateTodoItemCommand, TodoDto>
 {

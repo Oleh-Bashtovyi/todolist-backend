@@ -3,7 +3,7 @@ using MediatR;
 using TodoApp.Application.DTOs;
 using TodoApp.Application.Interfaces;
 
-namespace TodoApp.Application.Queries.GetAllTodoItems;
+namespace TodoApp.Application.Features.Queries.GetAllTodoItems;
 
 public class GetAllTodoItemsQueryHandler(ITodoRepository repository)
     : IRequestHandler<GetAllTodoItemsQuery, IEnumerable<TodoDto>>

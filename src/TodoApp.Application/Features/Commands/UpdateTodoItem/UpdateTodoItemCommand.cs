@@ -2,7 +2,7 @@
 using MediatR;
 using TodoApp.Application.DTOs;
 
-namespace TodoApp.Application.Commands.UpdateTodoItem;
+namespace TodoApp.Application.Features.Commands.UpdateTodoItem;
 
 public record UpdateTodoItemCommand(UpdateTodoDto TodoDto) : IRequest<TodoDto>;
 
