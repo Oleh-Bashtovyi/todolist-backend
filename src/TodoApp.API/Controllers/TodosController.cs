@@ -16,6 +16,9 @@ namespace TodoApp.API.Controllers;
 [Route("api/[controller]")]
 public class TodosController(IMediator mediator, ILogger<TodosController> logger) : ControllerBase
 {
+    /// <summary>
+    /// Get all todos
+    /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<TodoDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<TodoDto>>> GetAll(CancellationToken cancellationToken = default)
@@ -28,6 +31,9 @@ public class TodosController(IMediator mediator, ILogger<TodosController> logger
         return Ok(result);
     }
 
+    /// <summary>
+    /// Get todo by id
+    /// </summary>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(TodoDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
