@@ -3,7 +3,7 @@
 namespace TodoApp.Application.DTOs;
 
 public record TodoDto(
-    int Id,
+    Guid Id,
     string Title,
     string? Description,
     TodoStatus Status,

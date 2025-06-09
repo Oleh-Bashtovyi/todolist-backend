@@ -75,7 +75,7 @@ public class TodosController(IMediator mediator, ILogger<TodosController> logger
         var command = new CreateTodoItemCommand(createTodoDto);
         var result = await mediator.Send(command, cancellationToken);
 
-        return CreatedAtAction(nameof(GetById), new { id = result }, result);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
     [HttpPut]
