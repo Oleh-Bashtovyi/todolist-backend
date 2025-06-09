@@ -17,7 +17,7 @@ namespace TodoApp.API.Controllers;
 public class TodosController(IMediator mediator, ILogger<TodosController> logger) : ControllerBase
 {
     /// <summary>
-    /// Get all todos
+    /// Get all todo items
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<TodoDto>), StatusCodes.Status200OK)]
@@ -32,7 +32,7 @@ public class TodosController(IMediator mediator, ILogger<TodosController> logger
     }
 
     /// <summary>
-    /// Get todo by id
+    /// Get todo item by id
     /// </summary>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(TodoDto), StatusCodes.Status200OK)]
@@ -65,6 +65,10 @@ public class TodosController(IMediator mediator, ILogger<TodosController> logger
         return Ok(result);
     }*/
 
+
+    /// <summary>
+    /// Create new todo item in database
+    /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(TodoDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -78,6 +82,9 @@ public class TodosController(IMediator mediator, ILogger<TodosController> logger
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
+    /// <summary>
+    /// Update existing todo item in database
+    /// </summary>
     [HttpPut]
     [ProducesResponseType(typeof(TodoDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -92,11 +99,19 @@ public class TodosController(IMediator mediator, ILogger<TodosController> logger
         return Ok(result);
     }
 
+    /// <summary>
+    /// Update todo item status
+    /// </summary>
     [HttpPatch("{id:guid}/status")]
     [ProducesResponseType(typeof(TodoDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TodoDto>> UpdateStatus(Guid id, [FromBody] UpdateTodoStatusRequest request, CancellationToken cancellationToken = default)
     {
+        if (!Enum.IsDefined(typeof(TodoStatus), request.Status))
+        {
+            return BadRequest($"Invalid status value: {request.Status}");
+        }
+
         logger.LogInformation("Updating status for todo {TodoId} to {Status}", id, request.Status);
 
         var command = new UpdateTodoItemStatusCommand(id, request.Status);
@@ -105,6 +120,9 @@ public class TodosController(IMediator mediator, ILogger<TodosController> logger
         return Ok(result);
     }
 
+    /// <summary>
+    /// Delete todo item from database
+    /// </summary>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

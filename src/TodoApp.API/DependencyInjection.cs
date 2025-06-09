@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using TodoApp.API.Middleware;
 
 namespace TodoApp.API;
@@ -10,7 +11,13 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddControllers();
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                // configure to deserialize enums as strings in JSON requests and responses
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(allowIntegerValues: true));
+            });
+
         services.AddEndpointsApiExplorer();
         services.AddExceptionHandler<CustomExceptionHandler>();
 
@@ -31,6 +38,7 @@ public static class DependencyInjection
                 c.IncludeXmlComments(xmlPath);
             }
         });
+
 
 /*        var reactAppHttpOrigin = configuration.GetValue<string>("ReactAppUrls:http") ?? 
                                  throw new InvalidOperationException("React app http origin is not configured");
