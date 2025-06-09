@@ -11,10 +11,6 @@ public class TodoItem : BaseEntity, IAuditableEntity
     public DateTime? DueDate { get; set; }
     public bool IsCompleted => Status == TodoStatus.Done;
 
-    // Auditable properties
-    public string? CreatedBy { get; set; }
-    public string? UpdatedBy { get; set; }
-
     // Domain methods
     public void MarkAsInProgress()
     {
