@@ -9,7 +9,7 @@ namespace TodoApp.API;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
         services.AddControllers()
             .AddJsonOptions(options =>
@@ -40,22 +40,19 @@ public static class DependencyInjection
         });
 
 
-/*        var reactAppHttpOrigin = configuration.GetValue<string>("ReactAppUrls:http") ?? 
-                                 throw new InvalidOperationException("React app http origin is not configured");
-        var reactAppHttpsOrigin = configuration.GetValue<string>("ReactAppUrls:https") ??
-                                  throw new InvalidOperationException("React app https origin is not configured"); ;
-
         services.AddCors(options =>
         {
+            var reactOrigins = configuration.GetSection("ReactAppUrls").Get<string[]>();
+
             options.AddPolicy("AllowReactApp", builder =>
             {
                 builder
-                    .WithOrigins(reactAppHttpOrigin, reactAppHttpsOrigin)
+                    .WithOrigins(reactOrigins ?? [])
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
             });
-        });*/
+        });
 
         services.AddHealthChecks();
 
@@ -76,7 +73,7 @@ public static class DependencyInjection
 
         app.UseExceptionHandler(options => { });
         app.UseHttpsRedirection();
-        //app.UseCors("AllowReactApp");
+        app.UseCors("AllowReactApp");
         app.UseAuthorization();
         app.MapControllers();
         app.UseHealthChecks("/health",
