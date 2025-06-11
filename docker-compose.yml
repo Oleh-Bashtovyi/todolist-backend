@@ -1,0 +1,14 @@
+services:
+  todoapp.api:
+    image: todoappapi
+    build:
+      context: .
+      dockerfile: src/TodoApp.API/Dockerfile
+
+  tododb:
+    image: mcr.microsoft.com/mssql/server
+    volumes:
+      - mssql_data:/var/opt/mssql
+
+volumes:
+  mssql_data:
