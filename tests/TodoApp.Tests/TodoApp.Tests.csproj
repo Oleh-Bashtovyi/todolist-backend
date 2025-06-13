@@ -24,19 +24,24 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+	<PropertyGroup>
+		<CollectCoverage>true</CollectCoverage>
+		<CoverletOutputFormat>cobertura</CoverletOutputFormat>
+		<CoverletOutput>../coverage/coverage.cobertura.xml</CoverletOutput>
+	</PropertyGroup>
+
   <ItemGroup>
     <Folder Include="Integration\Controllers\" />
-    <Folder Include="TestHelpers\" />
     <Folder Include="Unit\Application\DTOs\" />
     <Folder Include="Unit\Infrastructure\Mapping\" />
     <Folder Include="Unit\Infrastructure\Repositories\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TodoApp.API\TodoApp.API.csproj" />
-    <ProjectReference Include="..\TodoApp.Application\TodoApp.Application.csproj" />
-    <ProjectReference Include="..\TodoApp.Domain\TodoApp.Domain.csproj" />
-    <ProjectReference Include="..\TodoApp.Infrastructure\TodoApp.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\TodoApp.API\TodoApp.API.csproj" />
+    <ProjectReference Include="..\..\src\TodoApp.Application\TodoApp.Application.csproj" />
+    <ProjectReference Include="..\..\src\TodoApp.Domain\TodoApp.Domain.csproj" />
+    <ProjectReference Include="..\..\src\TodoApp.Infrastructure\TodoApp.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
