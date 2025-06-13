@@ -27,10 +27,7 @@
   <ItemGroup>
     <Folder Include="Integration\Controllers\" />
     <Folder Include="TestHelpers\" />
-    <Folder Include="Unit\Application\Commands\" />
-    <Folder Include="Unit\Application\Services\" />
-    <Folder Include="Unit\Application\Validators\" />
-    <Folder Include="Unit\Application\Queries\" />
+    <Folder Include="Unit\Application\DTOs\" />
     <Folder Include="Unit\Infrastructure\Mapping\" />
     <Folder Include="Unit\Infrastructure\Repositories\" />
   </ItemGroup>
