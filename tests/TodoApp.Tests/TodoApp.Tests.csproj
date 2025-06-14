@@ -31,11 +31,16 @@
 	</PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Integration\Controllers\" />
     <Folder Include="Unit\Application\DTOs\" />
   </ItemGroup>
 
-  <ItemGroup>
+	<PropertyGroup>
+		<PreserveCompilationContext>true</PreserveCompilationContext>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
+
+	<ItemGroup>
     <ProjectReference Include="..\..\src\TodoApp.API\TodoApp.API.csproj" />
     <ProjectReference Include="..\..\src\TodoApp.Application\TodoApp.Application.csproj" />
     <ProjectReference Include="..\..\src\TodoApp.Domain\TodoApp.Domain.csproj" />

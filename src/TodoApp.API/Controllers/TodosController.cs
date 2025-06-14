@@ -53,19 +53,6 @@ public class TodosController(IMediator mediator, ILogger<TodosController> logger
         return Ok(result);
     }
 
-/*    [HttpGet("by-status/{status}")]
-    [ProducesResponseType(typeof(IEnumerable<TodoDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<TodoDto>>> GetByStatus(TodoStatus status, CancellationToken cancellationToken = default)
-    {
-        logger.LogInformation("Getting todos with status: {Status}", status);
-
-        var query = new GetTodosByStatusQuery(status);
-        var result = await mediator.Send(query, cancellationToken);
-
-        return Ok(result);
-    }*/
-
-
     /// <summary>
     /// Create new todo item in database
     /// </summary>
