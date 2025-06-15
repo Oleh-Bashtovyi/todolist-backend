@@ -1,0 +1,11 @@
+﻿global using Xunit;
+global using FluentAssertions;
+global using Moq;
+global using AutoFixture;
+global using AutoFixture.Xunit2;
+global using Microsoft.EntityFrameworkCore;
+global using TodoApp.Domain.Entities;
+global using TodoApp.Domain.Enums;
+global using TodoApp.Application.Features.Commands;
+global using TodoApp.Application.Features.Queries;
+global using TodoApp.Infrastructure.Data;
