@@ -15,17 +15,31 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
         // Add interceptors
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
 
         // Add DbContext with SQL and interceptors
-        services.AddDbContext<ApplicationDbContext>((sp, options) =>
+        if (environment == "Testing")
         {
-            options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-            options.UseSqlServer(connectionString);
-        });
+            // Use InMemory database for testing
+            services.AddDbContext<ApplicationDbContext>((sp, options) =>
+            {
+                options.UseInMemoryDatabase($"TestDb_{Guid.NewGuid()}");
+                options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+            });
+        }
+        else
+        {
+            // Use SQL Server for production/development
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<ApplicationDbContext>((sp, options) =>
+            {
+                options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+                options.UseSqlServer(connectionString);
+            });
+        }
 
         // Register ApplicationDbContext as IApplicationDbContext
         services.AddScoped<IApplicationDbContext>(provider =>

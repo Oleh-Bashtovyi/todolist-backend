@@ -11,7 +11,7 @@ public class UpdateTodoItemCommandValidator : AbstractValidator<UpdateTodoItemCo
     public UpdateTodoItemCommandValidator()
     {
         RuleFor(x => x.TodoDto.Id)
-            .NotNull().WithMessage("Id is required.");
+            .NotNull().NotEmpty().WithMessage("Id is required.");
 
         RuleFor(x => x.TodoDto.Title)
             .NotEmpty().WithMessage("Title is required.")
