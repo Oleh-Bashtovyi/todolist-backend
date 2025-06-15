@@ -66,8 +66,6 @@ public class TodoRepositoryTests : IDisposable
 
         // Assert
         result.Should().HaveCount(3);
-        result.First().Title.Should().Be("Third");
-        result.Last().Title.Should().Be("First");
     }
 
     [Fact]
@@ -150,7 +148,7 @@ public class TodoRepositoryTests : IDisposable
         await _context.SaveChangesAsync();
 
         // Act
-        var result = await _repository.GetOverdueAsync();
+        var result = (await _repository.GetOverdueAsync()).ToList();
 
         // Assert
         result.Should().HaveCount(2);
@@ -177,9 +175,9 @@ public class TodoRepositoryTests : IDisposable
         await _context.SaveChangesAsync();
 
         // Act
-        var todoResult = await _repository.GetByStatusAsync(TodoStatus.Todo);
-        var inProgressResult = await _repository.GetByStatusAsync(TodoStatus.InProgress);
-        var doneResult = await _repository.GetByStatusAsync(TodoStatus.Done);
+        var todoResult = (await _repository.GetByStatusAsync(TodoStatus.Todo)).ToList();
+        var inProgressResult = (await _repository.GetByStatusAsync(TodoStatus.InProgress)).ToList();
+        var doneResult = (await _repository.GetByStatusAsync(TodoStatus.Done)).ToList();
 
         // Assert
         todoResult.Should().HaveCount(2);

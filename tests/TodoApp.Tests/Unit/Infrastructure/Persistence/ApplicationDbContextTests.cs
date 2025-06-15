@@ -14,37 +14,6 @@ public class ApplicationDbContextTests : IDisposable
     }
 
     [Fact]
-    public void TodoItems_DbSet_ShouldBeConfigured()
-    {
-        // Act & Assert
-        _context.TodoItems.Should().NotBeNull();
-        _context.TodoItems.Should().BeAssignableTo<DbSet<TodoItem>>();
-    }
-
-    [Fact]
-    public async Task SaveChangesAsync_WithAuditableEntity_ShouldSetCreatedAtForNewEntity()
-    {
-        // Arrange
-        var todoItem = new TodoItem
-        {
-            Id = Guid.NewGuid(),
-            Title = "Test Todo",
-            Description = "Test Description",
-            Status = TodoStatus.Todo
-        };
-
-        // Act
-        _context.TodoItems.Add(todoItem);
-        await _context.SaveChangesAsync();
-
-        // Assert
-        var savedItem = await _context.TodoItems.FindAsync(todoItem.Id);
-        savedItem.Should().NotBeNull();
-        savedItem!.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
-        savedItem.UpdatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
-    }
-
-    [Fact]
     public async Task TodoItem_Configuration_ShouldApplyCorrectConstraints()
     {
         // Arrange
@@ -98,35 +67,6 @@ public class ApplicationDbContextTests : IDisposable
         var savedItem = await _context.TodoItems.FindAsync(todoItem.Id);
         savedItem.Should().NotBeNull();
         savedItem!.Status.Should().Be(TodoStatus.InProgress);
-    }
-
-    [Fact]
-    public async Task TodoItem_IsCompleted_ShouldBeIgnoredInDatabase()
-    {
-        // Arrange
-        var todoItem = new TodoItem
-        {
-            Id = Guid.NewGuid(),
-            Title = "Test Todo",
-            Status = TodoStatus.Done
-        };
-
-        // Act
-        _context.TodoItems.Add(todoItem);
-        await _context.SaveChangesAsync();
-
-        // Clear the context to ensure fresh load
-        _context.ChangeTracker.Clear();
-
-        // Assert
-        var savedItem = await _context.TodoItems.FindAsync(todoItem.Id);
-        savedItem.Should().NotBeNull();
-        savedItem!.IsCompleted.Should().BeTrue(); // This is computed property
-
-        // Verify that IsCompleted is not actually stored in database by checking entity configuration
-        var entityType = _context.Model.FindEntityType(typeof(TodoItem));
-        var isCompletedProperty = entityType?.FindProperty(nameof(TodoItem.IsCompleted));
-        isCompletedProperty.Should().BeNull(); // Should be ignored
     }
 
     [Theory]

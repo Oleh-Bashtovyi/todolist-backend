@@ -45,9 +45,7 @@ public class TodoControllerTests
         var okResult = result.Result as OkObjectResult;
         okResult!.Value.Should().BeEquivalentTo(todos);
 
-        _mediatorMock.Verify(
-            m => m.Send(It.IsAny<GetAllTodoItemsQuery>(), It.IsAny<CancellationToken>()),
-            Times.Once);
+        _mediatorMock.Verify(m => m.Send(It.IsAny<GetAllTodoItemsQuery>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]

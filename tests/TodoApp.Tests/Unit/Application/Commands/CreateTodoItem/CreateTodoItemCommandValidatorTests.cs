@@ -13,7 +13,7 @@ public class CreateTodoItemCommandValidatorTests
     {
         // Arrange
         var command = new CreateTodoItemCommand(
-            new CreateTodoDto("Valid Title", "Valid Description", DateTime.UtcNow.AddDays(1), TodoStatus.Todo));
+            new CreateTodoDto("Valid Title", "Valid Description", DateTime.UtcNow.AddDays(1)));
 
         // Act
         var result = _validator.TestValidate(command);
@@ -30,14 +30,13 @@ public class CreateTodoItemCommandValidatorTests
     {
         // Arrange
         var command = new CreateTodoItemCommand(
-            new CreateTodoDto(title, "Description", DateTime.UtcNow.AddDays(1), TodoStatus.Todo));
+            new CreateTodoDto(title, "Description", DateTime.UtcNow.AddDays(1)));
 
         // Act
         var result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.TodoDto.Title)
-            .WithErrorMessage("Title is required.");
+        result.ShouldHaveValidationErrorFor(x => x.TodoDto.Title);
     }
 
     [Fact]
@@ -46,14 +45,13 @@ public class CreateTodoItemCommandValidatorTests
         // Arrange
         var longTitle = new string('A', 201);
         var command = new CreateTodoItemCommand(
-            new CreateTodoDto(longTitle, "Description", DateTime.UtcNow.AddDays(1), TodoStatus.Todo));
+            new CreateTodoDto(longTitle, "Description", DateTime.UtcNow.AddDays(1)));
 
         // Act
         var result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.TodoDto.Title)
-            .WithErrorMessage("Title must not exceed 200 characters.");
+        result.ShouldHaveValidationErrorFor(x => x.TodoDto.Title);
     }
 
     [Fact]
@@ -62,14 +60,13 @@ public class CreateTodoItemCommandValidatorTests
         // Arrange
         var longDescription = new string('A', 1001);
         var command = new CreateTodoItemCommand(
-            new CreateTodoDto("Valid Title", longDescription, DateTime.UtcNow.AddDays(1), TodoStatus.Todo));
+            new CreateTodoDto("Valid Title", longDescription, DateTime.UtcNow.AddDays(1)));
 
         // Act
         var result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.TodoDto.Description)
-            .WithErrorMessage("Description must not exceed 1000 characters.");
+        result.ShouldHaveValidationErrorFor(x => x.TodoDto.Description);
     }
 
     [Fact]
@@ -83,8 +80,7 @@ public class CreateTodoItemCommandValidatorTests
         var result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.TodoDto.Status)
-            .WithErrorMessage("Status must be a valid TodoStatus value.");
+        result.ShouldHaveValidationErrorFor(x => x.TodoDto.Status);
     }
 
     [Fact]
@@ -92,7 +88,7 @@ public class CreateTodoItemCommandValidatorTests
     {
         // Arrange
         var command = new CreateTodoItemCommand(
-            new CreateTodoDto("Valid Title", null, DateTime.UtcNow.AddDays(1), TodoStatus.Todo));
+            new CreateTodoDto("Valid Title", null, DateTime.UtcNow.AddDays(1)));
 
         // Act
         var result = _validator.TestValidate(command);

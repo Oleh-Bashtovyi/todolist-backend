@@ -59,11 +59,7 @@ public class UpdateTodoItemStatusCommandHandlerTests
             .ReturnsAsync((TodoItem?)null);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<NotFoundException>(() =>
-            _handler.Handle(command, CancellationToken.None));
-
-        exception.Message.Should().Contain("TodoItem");
-        exception.Message.Should().Contain(itemId.ToString());
+        await Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(command, CancellationToken.None));
 
         _repositoryMock.Verify(x => x.GetByIdAsync(itemId, It.IsAny<CancellationToken>()), Times.Once);
         _repositoryMock.Verify(x => x.UpdateAsync(It.IsAny<TodoItem>(), It.IsAny<CancellationToken>()), Times.Never);

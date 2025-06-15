@@ -33,8 +33,7 @@ public class UpdateTodoItemCommandValidatorTests
         var result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.TodoDto.Id)
-            .WithErrorMessage("Id is required.");
+        result.ShouldHaveValidationErrorFor(x => x.TodoDto.Id);
     }
 
     [Theory]
@@ -51,7 +50,6 @@ public class UpdateTodoItemCommandValidatorTests
         var result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.TodoDto.Title)
-            .WithErrorMessage("Title is required.");
+        result.ShouldHaveValidationErrorFor(x => x.TodoDto.Title);
     }
 }

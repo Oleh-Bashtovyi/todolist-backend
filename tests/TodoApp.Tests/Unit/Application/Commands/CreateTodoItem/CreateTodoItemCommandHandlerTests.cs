@@ -19,7 +19,7 @@ public class CreateTodoItemCommandHandlerTests
     public async Task Handle_WithValidCommand_ShouldCreateTodoItem()
     {
         // Arrange
-        var createDto = new CreateTodoDto("Test Title", "Test Description", DateTime.UtcNow.AddDays(1), TodoStatus.Todo);
+        var createDto = new CreateTodoDto("Test Title", "Test Description", DateTime.UtcNow.AddDays(1));
         var command = new CreateTodoItemCommand(createDto);
 
         var createdTodoItem = new TodoItem

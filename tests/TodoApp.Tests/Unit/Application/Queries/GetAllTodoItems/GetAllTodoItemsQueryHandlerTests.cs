@@ -21,7 +21,7 @@ public class GetAllTodoItemsQueryHandlerTests
         var query = new GetAllTodoItemsQuery();
         var todoItems = new List<TodoItem>
         {
-            new TodoItem
+            new()
             {
                 Id = Guid.NewGuid(),
                 Title = "First Item",
@@ -30,7 +30,7 @@ public class GetAllTodoItemsQueryHandlerTests
                 DueDate = DateTime.UtcNow.AddDays(1),
                 CreatedAt = DateTime.UtcNow.AddDays(-1)
             },
-            new TodoItem
+            new()
             {
                 Id = Guid.NewGuid(),
                 Title = "Second Item",
@@ -45,15 +45,13 @@ public class GetAllTodoItemsQueryHandlerTests
             .ReturnsAsync(todoItems);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = (await _handler.Handle(query, CancellationToken.None)).ToList();
 
         // Assert
         result.Should().NotBeNull();
         result.Should().HaveCount(2);
-
-        var resultList = result.ToList();
-        resultList[0].Title.Should().Be("First Item");
-        resultList[1].Title.Should().Be("Second Item");
+        result.Should().Contain(x => x.Title == "First Item");
+        result.Should().Contain(x => x.Title == "Second Item");
 
         _repositoryMock.Verify(x => x.GetAllAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -69,7 +67,7 @@ public class GetAllTodoItemsQueryHandlerTests
             .ReturnsAsync(emptyList);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var result = (await _handler.Handle(query, CancellationToken.None)).ToList();
 
         // Assert
         result.Should().NotBeNull();

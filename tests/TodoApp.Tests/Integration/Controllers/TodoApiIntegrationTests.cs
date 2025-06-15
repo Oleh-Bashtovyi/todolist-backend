@@ -16,6 +16,11 @@ public class TodoApiIntegrationTests : IClassFixture<WebApplicationFactory<Progr
     private readonly HttpClient _client;
     private readonly IServiceScope _scope;
     private readonly ITodoRepository _todoService;
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter() }
+    };
 
     public TodoApiIntegrationTests(WebApplicationFactory<Program> factory)
     {
@@ -29,18 +34,6 @@ public class TodoApiIntegrationTests : IClassFixture<WebApplicationFactory<Progr
         _todoService = _scope.ServiceProvider.GetRequiredService<ITodoRepository>();
     }
 
-    public void Dispose()
-    {
-        var allTodos = _todoService.GetAllAsync().Result;
-        foreach (var todo in allTodos)
-        {
-            _todoService.DeleteAsync(todo).Wait();
-        }
-
-        _scope?.Dispose();
-        _client?.Dispose();
-    }
-
     [Fact]
     public async Task GetAllTodos_ShouldReturnEmptyList_WhenNoTodosExist()
     {
@@ -51,11 +44,7 @@ public class TodoApiIntegrationTests : IClassFixture<WebApplicationFactory<Progr
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var jsonResponse = await response.Content.ReadAsStringAsync();
-        var todos = JsonSerializer.Deserialize<List<TodoDto>>(jsonResponse, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter() }
-        });
+        var todos = JsonSerializer.Deserialize<List<TodoDto>>(jsonResponse, _jsonOptions);
 
         todos.Should().NotBeNull();
         todos.Should().BeEmpty();
@@ -78,11 +67,7 @@ public class TodoApiIntegrationTests : IClassFixture<WebApplicationFactory<Progr
         createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var createdTodoJson = await createResponse.Content.ReadAsStringAsync();
-        var createdTodo = JsonSerializer.Deserialize<TodoDto>(createdTodoJson, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter() }
-        });
+        var createdTodo = JsonSerializer.Deserialize<TodoDto>(createdTodoJson, _jsonOptions);
 
         createdTodo.Should().NotBeNull();
         createdTodo!.Title.Should().Be(createTodoDto.Title);
@@ -97,11 +82,7 @@ public class TodoApiIntegrationTests : IClassFixture<WebApplicationFactory<Progr
         getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var retrievedTodoJson = await getResponse.Content.ReadAsStringAsync();
-        var retrievedTodo = JsonSerializer.Deserialize<TodoDto>(retrievedTodoJson, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter() }
-        });
+        var retrievedTodo = JsonSerializer.Deserialize<TodoDto>(retrievedTodoJson, _jsonOptions);
 
         retrievedTodo.Should().NotBeNull();
         retrievedTodo.Should().BeEquivalentTo(createdTodo);
@@ -113,11 +94,7 @@ public class TodoApiIntegrationTests : IClassFixture<WebApplicationFactory<Progr
         getAllResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var allTodosJson = await getAllResponse.Content.ReadAsStringAsync();
-        var allTodos = JsonSerializer.Deserialize<List<TodoDto>>(allTodosJson, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter() }
-        });
+        var allTodos = JsonSerializer.Deserialize<List<TodoDto>>(allTodosJson, _jsonOptions);
 
         allTodos.Should().NotBeNull();
         allTodos.Should().HaveCount(1);
@@ -138,11 +115,7 @@ public class TodoApiIntegrationTests : IClassFixture<WebApplicationFactory<Progr
         createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var createdTodoJson = await createResponse.Content.ReadAsStringAsync();
-        var createdTodo = JsonSerializer.Deserialize<TodoDto>(createdTodoJson, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter() }
-        });
+        var createdTodo = JsonSerializer.Deserialize<TodoDto>(createdTodoJson, _jsonOptions);
 
         // Act 1 - Update status to InProgress
         var updateStatusRequest = new { Status = TodoStatus.InProgress };
@@ -152,11 +125,7 @@ public class TodoApiIntegrationTests : IClassFixture<WebApplicationFactory<Progr
         updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var updatedTodoJson = await updateResponse.Content.ReadAsStringAsync();
-        var updatedTodo = JsonSerializer.Deserialize<TodoDto>(updatedTodoJson, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter() }
-        });
+        var updatedTodo = JsonSerializer.Deserialize<TodoDto>(updatedTodoJson, _jsonOptions);
 
         updatedTodo.Should().NotBeNull();
         updatedTodo!.Status.Should().Be(TodoStatus.InProgress);
@@ -171,11 +140,7 @@ public class TodoApiIntegrationTests : IClassFixture<WebApplicationFactory<Progr
         finalUpdateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var finalTodoJson = await finalUpdateResponse.Content.ReadAsStringAsync();
-        var finalTodo = JsonSerializer.Deserialize<TodoDto>(finalTodoJson, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter() }
-        });
+        var finalTodo = JsonSerializer.Deserialize<TodoDto>(finalTodoJson, _jsonOptions);
 
         finalTodo.Should().NotBeNull();
         finalTodo!.Status.Should().Be(TodoStatus.Done);
@@ -187,11 +152,7 @@ public class TodoApiIntegrationTests : IClassFixture<WebApplicationFactory<Progr
         verifyResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var verifiedTodoJson = await verifyResponse.Content.ReadAsStringAsync();
-        var verifiedTodo = JsonSerializer.Deserialize<TodoDto>(verifiedTodoJson, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter() }
-        });
+        var verifiedTodo = JsonSerializer.Deserialize<TodoDto>(verifiedTodoJson, _jsonOptions);
 
         verifiedTodo.Should().NotBeNull();
         verifiedTodo!.Status.Should().Be(TodoStatus.Done);
@@ -217,11 +178,7 @@ public class TodoApiIntegrationTests : IClassFixture<WebApplicationFactory<Progr
         var createTodoDto = new CreateTodoDto("Test Todo", "Description", null);
         var createResponse = await _client.PostAsJsonAsync("/api/todos", createTodoDto);
         var createdTodoJson = await createResponse.Content.ReadAsStringAsync();
-        var createdTodo = JsonSerializer.Deserialize<TodoDto>(createdTodoJson, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter() }
-        });
+        var createdTodo = JsonSerializer.Deserialize<TodoDto>(createdTodoJson, _jsonOptions);
 
         // Act - Try to update with invalid status
         var invalidUpdateRequest = new { Status = 999 }; // Invalid status value
@@ -229,5 +186,17 @@ public class TodoApiIntegrationTests : IClassFixture<WebApplicationFactory<Progr
 
         // Assert
         updateResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    public void Dispose()
+    {
+        var allTodos = _todoService.GetAllAsync().Result;
+        foreach (var todo in allTodos)
+        {
+            _todoService.DeleteAsync(todo).Wait();
+        }
+
+        _scope?.Dispose();
+        _client?.Dispose();
     }
 }

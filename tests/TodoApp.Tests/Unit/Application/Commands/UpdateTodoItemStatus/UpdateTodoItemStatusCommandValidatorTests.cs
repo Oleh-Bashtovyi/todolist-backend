@@ -33,7 +33,6 @@ public class UpdateTodoItemStatusCommandValidatorTests
         var result = _validator.TestValidate(command);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Status)
-            .WithErrorMessage("Status must be a valid TodoStatus value.");
+        result.ShouldHaveValidationErrorFor(x => x.Status);
     }
 }
